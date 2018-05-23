@@ -28,6 +28,7 @@ Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
 " Install L9 and avoid a Naming conflict if you've already installed a
 " different version somewhere else.
 " Plugin 'ascenator/L9', {'name': 'newL9'}
+Plugin 'mileszs/ack.vim'
 
 " All of your Plugins must be added before the following line
 call vundle#end()            " required
@@ -60,3 +61,6 @@ let g:syntastic_check_on_open = 1
 let g:syntastic_check_on_wq = 0
 
 let g:syntastic_ruby_exec = '~/.rbenv/shims/ruby'
+autocmd FileType ruby set shiftwidth=2
+autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+
