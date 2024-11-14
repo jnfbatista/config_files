@@ -4,34 +4,38 @@ if empty(glob('~/.vim/autoload/plug.vim'))
   autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
 endif
 call plug#begin('~/.vim/plugged')
-Plug 'crusoexia/vim-monokai'
-
 Plug 'ctrlpvim/ctrlp.vim'
 Plug 'mileszs/ack.vim'
-"Plug 'w0rp/ale'
+Plug 'w0rp/ale'
 Plug 'tpope/vim-fugitive'
 Plug 'tpope/vim-vinegar'
 Plug 'Townk/vim-autoclose'
 
-Plug 'janko-m/vim-test'
+Plug 'vim-test/vim-test'
 Plug 'tpope/vim-dispatch'
 
 Plug 'pangloss/vim-javascript'
 Plug 'mxw/vim-jsx'
 
 Plug 'tpope/vim-rails'
+Plug 'direnv/direnv.vim'
 
 Plug 'guns/vim-clojure-static'
 Plug 'tpope/vim-fireplace'
 Plug 'luochen1990/rainbow'
 
 Plug 'metakirby5/codi.vim'
+Plug 'airblade/vim-gitgutter'
+
+Plug 'hardhackerlabs/theme-vim', { 'as': 'hardhacker' }
+Plug 'haishanh/night-owl.vim'
+
 call plug#end()
 
-"let g:ale_sign_error = '✖'
-"let g:ale_sign_warning = '⚠'
-"hi ALEErrorSign ctermfg=1
-"hi ALEWarningSign ctermfg=3
+let g:ale_sign_error = '✖'
+let g:ale_sign_warning = '⚠'
+hi ALEErrorSign ctermfg=1
+hi ALEWarningSign ctermfg=3
 
 filetype plugin indent on
 
@@ -44,7 +48,7 @@ set nocompatible
 
 set encoding=utf-8
 set list
-set list listchars=tab:→\ ,trail:·,eol:¬
+set list listchars=trail:·,nbsp:~,
 set tabstop=2
 set ruler
 set laststatus=2
@@ -65,29 +69,16 @@ set nobackup
 set noswapfile
 set number
 set autoread
-set relativenumber
 set clipboard=unnamed
 
 let g:ctrlp_map = '<c-p>'
 let g:ctrlp_cmd = 'CtrlP'
 let g:ctrlp_working_path_mode = 'ra'
 let g:ctrlp_root_markers = ['.git', '.hg', 'Rakefile']
-let g:ctrlp_custom_ignore = '\v[\/](\.(git|hg|svn))|(node_modules|vendor|coverage|target)$'
 
-" use silver searcher
-" http://robots.thoughtbot.com/faster-grepping-in-vim
-if executable('ag')
-  " Use ag over grep
-  set grepprg=ag\ --nogroup\ --nocolor
-
-  " Use ag in CtrlP for listing files. Lightning fast and respects .gitignore
-  let g:ctrlp_user_command = 'ag %s -l --nocolor -g ""'
-
-  " ag is fast enough that CtrlP doesn't need to cache
-  let g:ctrlp_use_caching = 0
-
-  " use ag on Ack
-  let g:ackprg = 'ag --vimgrep'
+" use ripgrep to search files in ctrlp
+if executable('rg')
+  let g:ctrlp_user_command = "rg %s --files --hidden -g '!.git/' --color=never --glob \"\""
 endif
 
 let g:html_indent_inctags = "html,body,head,tbody"
@@ -120,11 +111,10 @@ autocmd BufNewFile,BufReadPost *.cljx setfiletype clojure
 autocmd BufNewFile,BufReadPost *.cljc setfiletype clojure
 autocmd BufNewFile,BufReadPost *.pxi setfiletype clojure
 
+" make test commands execute using dispatch.vim
+let test#strategy = "vimterminal"
+
 let mapleader = ","
-map <Leader>m :Rmodel <CR>
-map <Leader>c :Rcontroller <CR>
-map <Leader>v :Rview <CR>
-map <Leader>u :Runittest <CR>
 
 map <Leader>l :TestLast <CR>
 map <Leader>n :TestNearest <CR>
@@ -141,4 +131,4 @@ autocmd BufRead,BufNewFile *.md setlocal spell
 autocmd FileType gitcommit setlocal spell
 
 syntax on
-colorscheme monokai
+colorscheme night-owl
