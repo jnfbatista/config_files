@@ -1,66 +1,134 @@
-set nocompatible              " be iMproved, required
-filetype off                  " required
+if empty(glob('~/.vim/autoload/plug.vim'))
+  silent !curl -fLo ~/.vim/autoload/plug.vim --create-dirs
+        \ https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim
+  autocmd VimEnter * PlugInstall --sync | source $MYVIMRC
+endif
+call plug#begin('~/.vim/plugged')
+Plug 'ctrlpvim/ctrlp.vim'
+Plug 'mileszs/ack.vim'
+Plug 'w0rp/ale'
+Plug 'tpope/vim-fugitive'
+Plug 'tpope/vim-vinegar'
+Plug 'Townk/vim-autoclose'
 
-" set the runtime path to include Vundle and initialize
-set rtp+=~/.vim/bundle/Vundle.vim
-call vundle#begin()
-" alternatively, pass a path where Vundle should install plugins
-"call vundle#begin('~/some/path/here')
+Plug 'vim-test/vim-test'
+Plug 'tpope/vim-dispatch'
 
-" let Vundle manage Vundle, required
-Plugin 'VundleVim/Vundle.vim'
+Plug 'pangloss/vim-javascript'
+Plug 'mxw/vim-jsx'
 
-" The following are examples of different formats supported.
-" Keep Plugin commands between vundle#begin/end.
-" plugin on GitHub repo
-Plugin 'tpope/vim-fugitive'
-Plugin 'vim-syntastic/syntastic'
-Plugin 'vim-ruby/vim-ruby'
-" plugin from http://vim-scripts.org/vim/scripts.html
-" Plugin 'L9'
-" Git plugin not hosted on GitHub
-Plugin 'git://git.wincent.com/command-t.git'
-" git repos on your local machine (i.e. when working on your own plugin)
-"Plugin 'file:///home/gmarik/path/to/plugin'
-" The sparkup vim script is in a subdirectory of this repo called vim.
-" Pass the path to set the runtimepath properly.
-Plugin 'rstacruz/sparkup', {'rtp': 'vim/'}
-" Install L9 and avoid a Naming conflict if you've already installed a
-" different version somewhere else.
-" Plugin 'ascenator/L9', {'name': 'newL9'}
-Plugin 'mileszs/ack.vim'
+Plug 'tpope/vim-rails'
+Plug 'direnv/direnv.vim'
 
-" All of your Plugins must be added before the following line
-call vundle#end()            " required
-filetype plugin indent on    " required
-" To ignore plugin indent changes, instead use:
-"filetype plugin on
-"
-" Brief help
-" :PluginList       - lists configured plugins
-" :PluginInstall    - installs plugins; append `!` to update or just :PluginUpdate
-" :PluginSearch foo - searches for foo; append `!` to refresh local cache
-" :PluginClean      - confirms removal of unused plugins; append `!` to auto-approve removal
-"
-" see :h vundle for more details or wiki for FAQ
-" Put your non-Plugin stuff after this line
-"
-syntax on             " Enable syntax highlighting
-filetype indent on    " Enable filetype-specific indenting
-filetype plugin on    " Enable filetype-specific plugins
+Plug 'guns/vim-clojure-static'
+Plug 'tpope/vim-fireplace'
+Plug 'luochen1990/rainbow'
 
+Plug 'metakirby5/codi.vim'
+Plug 'airblade/vim-gitgutter'
 
+Plug 'hardhackerlabs/theme-vim', { 'as': 'hardhacker' }
+Plug 'haishanh/night-owl.vim'
 
-set statusline+=%#warningmsg#
-set statusline+=%{SyntasticStatuslineFlag()}
-set statusline+=%*
+call plug#end()
 
-let g:syntastic_always_populate_loc_list = 1
-let g:syntastic_auto_loc_list = 1
-let g:syntastic_check_on_open = 1
-let g:syntastic_check_on_wq = 0
+let g:ale_sign_error = '✖'
+let g:ale_sign_warning = '⚠'
+hi ALEErrorSign ctermfg=1
+hi ALEWarningSign ctermfg=3
 
-let g:syntastic_ruby_exec = '~/.rbenv/shims/ruby'
-autocmd FileType ruby set shiftwidth=2
-autocmd FileType yaml setlocal ts=2 sts=2 sw=2 expandtab
+filetype plugin indent on
 
+let &t_Co=256
+let t_Co=256
+syntax on
+
+set autoindent
+set nocompatible
+
+set encoding=utf-8
+set list
+set list listchars=trail:·,nbsp:~,
+set tabstop=2
+set ruler
+set laststatus=2
+set softtabstop=2
+set shiftwidth=2
+set expandtab
+set nowrap
+set guioptions-=r
+set guioptions-=l
+set colorcolumn=80
+set guioptions-=b
+set guioptions-=T
+set incsearch
+set cursorline
+set backspace=indent,eol,start
+set showmatch
+set nobackup
+set noswapfile
+set number
+set autoread
+set clipboard=unnamed
+
+let g:ctrlp_map = '<c-p>'
+let g:ctrlp_cmd = 'CtrlP'
+let g:ctrlp_working_path_mode = 'ra'
+let g:ctrlp_root_markers = ['.git', '.hg', 'Rakefile']
+
+" use ripgrep to search files in ctrlp
+if executable('rg')
+  let g:ctrlp_user_command = "rg %s --files --hidden -g '!.git/' --color=never --glob \"\""
+endif
+
+let g:html_indent_inctags = "html,body,head,tbody"
+let g:html_indent_script1 = "inc"
+let g:html_indent_style1 = "inc"
+
+" Show Marks
+let showmarks_include = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ"
+let g:showmarks_enable = 1
+highlight ShowMarksHLl gui=bold guibg=LightBlue guifg=Blue
+highlight ShowMarksHLu gui=bold guibg=LightRed guifg=DarkRed
+highlight ShowMarksHLo gui=bold guibg=LightYellow guifg=DarkYellow
+highlight ShowMarksHLm gui=bold guibg=LightGreen guifg=DarkGreen
+
+" Omni complete on tab
+function! SuperCleverTab()
+  if strpart(getline('.'), 0, col('.') - 1) =~ '^\s*$'
+    return "\<Tab>"
+  else
+    return "\<C-N>"
+  endif
+endfunction
+inoremap <Tab> <C-R>=SuperCleverTab()<cr>
+
+if filereadable(expand("~/.vimrc.local"))
+  source ~/.vimrc.local
+end
+
+autocmd BufNewFile,BufReadPost *.cljx setfiletype clojure
+autocmd BufNewFile,BufReadPost *.cljc setfiletype clojure
+autocmd BufNewFile,BufReadPost *.pxi setfiletype clojure
+
+" make test commands execute using dispatch.vim
+let test#strategy = "vimterminal"
+
+let mapleader = ","
+
+map <Leader>l :TestLast <CR>
+map <Leader>n :TestNearest <CR>
+map <Leader>t :TestFile <CR>
+
+nmap <silent> t<C-n> :TestNearest<CR> " t Ctrl+n
+nmap <silent> t<C-f> :TestFile<CR>    " t Ctrl+f
+nmap <silent> t<C-s> :TestSuite<CR>   " t Ctrl+s
+nmap <silent> t<C-l> :TestLast<CR>    " t Ctrl+l
+nmap <silent> t<C-g> :TestVisit<CR>   " t Ctrl+g
+
+" spell check
+autocmd BufRead,BufNewFile *.md setlocal spell
+autocmd FileType gitcommit setlocal spell
+
+syntax on
+colorscheme Tomorrow-Night
